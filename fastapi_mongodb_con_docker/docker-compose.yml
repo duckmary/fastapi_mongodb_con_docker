@@ -1,0 +1,23 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    env_file: .env
+    #environment:
+    #  MONGO_INITDB_ROOT_USERNAME: admin
+    #  MONGO_INITDB_ROOT_PASSWORD: 123
+    volumes:
+      - mongodb-data:/data/db
+  api:
+    build: .
+    working_dir: /app
+    env_file: .env
+    volumes:
+      - ./api:/app/api
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb-data:
